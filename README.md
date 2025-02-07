@@ -19,7 +19,7 @@ Latex Tagger 是一个基于 PyQt5 的桌面应用程序，允许用户通过截
 7. **保存**：点击“保存(Ctrl+S)”按钮或按下Ctrl+S键保存识别结果。保存的结果会存放在图片文件夹目录的上一级目录的label_images和labels文件夹中。
 8. **浏览图片**：点击“打开图片文件夹”按钮选择图片文件夹，使用左右箭头按钮或按下**A和D键**浏览图片。
 9. **演示效果**：
-![演示效果](show.gif)
+![演示效果](/show.gif)
 10. **支持的大模型**：
     - 豆包: [https://console.volcengine.com/](https://console.volcengine.com/)
     - 通义千问: [https://www.aliyun.com/](https://www.aliyun.com/)
