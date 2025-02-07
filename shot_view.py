@@ -1,5 +1,4 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QWidget
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QWidget
 from PyQt5.QtGui import QPixmap, QPainter
 from PyQt5.QtCore import Qt
 
@@ -30,7 +29,7 @@ class MyGraphicsView(QGraphicsView):
         if not new_pixmap.isNull():
             self.pixmap_item.setPixmap(new_pixmap)  # 更新图像项
         else:
-            print("Error: Invalid pixmap.")
+            pass
 
     def wheelEvent(self, event):
         """鼠标滚轮缩放事件"""
@@ -47,11 +46,3 @@ class MyGraphicsView(QGraphicsView):
         """鼠标释放事件"""
         self.setDragMode(QGraphicsView.NoDrag)  # 禁用拖动模式
         super().mouseReleaseEvent(event)
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    view = MyGraphicsView()
-    view.resize(800, 600)
-    view.show()
-    sys.exit(app.exec_())

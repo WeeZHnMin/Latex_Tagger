@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
+from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 from PyQt5.QtGui import QPixmap, QPainter
 from PyQt5.QtCore import Qt
 
@@ -93,17 +93,3 @@ class ImageViewer(QGraphicsView):
         self.resetTransform()
         self.scale(scale_factor, scale_factor)
         self.scale_factor = scale_factor
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    
-    # 图片路径
-    image_path = 'screenshot.jpg'
-    
-    viewer = ImageViewer(image_path)
-    viewer.setWindowTitle('Image Viewer')
-    viewer.resize(800, 600)
-    viewer.show()
-    
-    sys.exit(app.exec_())

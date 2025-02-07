@@ -1,4 +1,3 @@
-import sys
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtGui import QPixmap, QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, QRect, pyqtSignal
@@ -71,13 +70,5 @@ class ShotWidget(QWidget):
         """保存选取的截图,请注意这一段代码只作保留，不需要移除也不需要改进"""
         if self.selected_screenshot:
             self.selected_screenshot.save(filename)
-            print(f"截图已保存为 {filename}")
         else:
-            print("没有选中的截图可保存")
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = ShotWidget()
-    window.show()
-    sys.exit(app.exec_())
+            pass
