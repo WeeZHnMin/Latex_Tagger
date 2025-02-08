@@ -21,7 +21,8 @@ Latex Tagger 是一个基于 PyQt5 的桌面应用程序，允许用户通过截
 9. **演示效果**：
 ![演示效果](/show.gif)
 10. **支持的大模型**：
-    - 豆包: [https://console.volcengine.com/](https://console.volcengine.com/)，请在“大模型-模型广场”中找到**Doubao-vision-lite-32k、Doubao-vision-pro-32k、Doubao-1.5-vision-pro-32k**点击“查看详情-模型推理-确认接入”创建API Key。
+    - 豆包: [https://console.volcengine.com/](https://console.volcengine.com/)，请在“大模型-模型广场”中找到**Doubao-vision-lite-32k、Doubao-vision-pro-32k、Doubao-1.5-vision-pro-32k**点击“查看详情-模型推理-确认接入”创建API Key。**注意:选择豆包模型需要输入对应的模型ID**
+    ![Model ID](/Model_id.png)
     - 通义千问: [https://www.aliyun.com/](https://www.aliyun.com/)，请在”大模型-模型广场“中找到“**通义千问2.5-VL-72B**”点击“API调用实例”创建API Key。
     - 月之暗面(Kimi): [https://www.moonshot.cn/](https://www.moonshot.cn/)，请在用户中心点击“API Key管理”创建新的API Key。
 

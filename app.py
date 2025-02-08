@@ -1,6 +1,6 @@
 import re
 import sys
-from PyQt5.QtWidgets import QApplication, QComboBox, QShortcut, QFileDialog, QSizePolicy, QLineEdit, QHBoxLayout, QWidget, QVBoxLayout, QFrame, QLabel, QPushButton, QDesktopWidget, QTextEdit
+from PyQt5.QtWidgets import QApplication, QFormLayout, QComboBox, QShortcut, QFileDialog, QSizePolicy, QLineEdit, QHBoxLayout, QWidget, QVBoxLayout, QFrame, QLabel, QPushButton, QDesktopWidget, QTextEdit
 from PyQt5.QtGui import QPixmap, QIcon, QKeySequence, QFont
 from PyQt5.QtCore import Qt, QThread
 from PyQt5.QtWidgets import QMessageBox
@@ -18,7 +18,7 @@ class MyApp(QWidget):
         self.ui()
         self.center_window()
 
-        self.current_model = "ep-20250114235143-2jcft"
+        self.current_model = None
         self.current_api = None
         self.image_list = None
         self.shot = None
@@ -78,7 +78,8 @@ class MyApp(QWidget):
         child_layout1 = QHBoxLayout()  # 按钮布局
         child_layout2 = QHBoxLayout()  # 模型选择和连接布局
         child_layout3 = QHBoxLayout()  # 输入内容布局
-        child_layout4 = QHBoxLayout()  # API Key 输入布局
+        child_layout4 = QHBoxLayout()  
+        child_layout5 = QHBoxLayout()  
 
         # 创建按钮
         sc_btn = QPushButton('截图(W)(按下S选中)')
@@ -94,10 +95,15 @@ class MyApp(QWidget):
         check_connect = QPushButton('测试连接(Enter)')
 
         # 创建API Key 输入框
-        api_clarication = QLabel('输入你的API KEY:')
+        api_clarication = QLabel('API Key:')
         self.api_input = QLineEdit()
-        self.api_input.setPlaceholderText('请在这里输入你的模型的API KEY')
+        self.api_input.setPlaceholderText('输入模型的API Key')
         self.api_input.textChanged.connect(self.on_api_key)
+
+        # ID输入
+        modeiId_clarication = QLabel('Model Id(仅豆包需要):')
+        self.model_id = QLineEdit()
+        self.model_id.setPlaceholderText('输入Model id,如果不懂请看项目的使用说明')
 
         # 创建输入提示框
         clarification2 = QLabel('输入内容: ')
@@ -121,6 +127,9 @@ class MyApp(QWidget):
         child_layout4.addWidget(api_clarication)
         child_layout4.addWidget(self.api_input)
 
+        child_layout5.addWidget(modeiId_clarication)
+        child_layout5.addWidget(self.model_id)
+
         # 显示截图
         self.my_shot = MyGraphicsView()
 
@@ -128,6 +137,7 @@ class MyApp(QWidget):
         main_layout.addLayout(child_layout2)
         main_layout.addLayout(child_layout3)
         main_layout.addLayout(child_layout4)
+        main_layout.addLayout(child_layout5)
         main_layout.addLayout(child_layout1)
         main_layout.addWidget(self.my_shot)
 
@@ -142,6 +152,7 @@ class MyApp(QWidget):
 
         self.model_cb.currentIndexChanged.connect(self.selectionchange)
         self.input_text.textChanged.connect(self.on_text_changed)
+        self.model_id.textChanged.connect(self.on_modelId)
 
         check_connect.clicked.connect(self.test_connect)
         check_shortcut = QShortcut(QKeySequence(Qt.Key_Return), self)
@@ -156,6 +167,11 @@ class MyApp(QWidget):
         self.save_shortcut.activated.connect(self.on_save)
 
         return one
+
+    def on_modelId(self):
+        '''监听并更新输入的Model id'''
+        self.current_model = self.model_id.text()
+        print(f'当前model if为{self.current_model}')
     
     def on_api_key(self):
         '''监听并更新输入的API Key'''
@@ -192,8 +208,11 @@ class MyApp(QWidget):
             self.my_shot.update_image(self.shot)
     
     def selectionchange(self, i):
-        model_map = {'Doubao-vision-lite-32k': "ep-20250114235143-2jcft", 'Doubao-1.5-vision-pro-32k': 'ep-20250131202155-57zt4', 'Doubao-vision-pro-32k': "ep-20250201110631-2tlvx", "通义千问2.5-VL-72B": "qwen-vl-plus", "Kimi": "moonshot-v1-8k-vision-preview"}
-        self.current_model = model_map[self.model_cb.currentText()]
+        model_map = {'Doubao-vision-lite-32k': None, 'Doubao-1.5-vision-pro-32k': None, 'Doubao-vision-pro-32k': None, "通义千问2.5-VL-72B": "qwen-vl-plus", "Kimi": "moonshot-v1-8k-vision-preview"}
+        if 'Doubao' in self.model_cb.currentText():
+            self.current_model = self.model_id.text()
+        else:
+            self.current_model = model_map[self.model_cb.currentText()]
 
     def on_text_changed(self):
         '''监听输入的提示词(你的输入文字内容)'''
@@ -223,7 +242,7 @@ class MyApp(QWidget):
                 self.save_times_dict[self.cur_image_name] += 1
 
     def show_error(self, error_message):
-        QMessageBox.critical(self, "错误", 'Api输入有误，请核对你的Api是否正确，或确认接入该模型的Api服务已开启')  # 显示错误消息
+        QMessageBox.critical(self, "错误", f'Api输入有误，请核对你的Api是否正确以及输入的对应模型ID,错误: \n{error_message}')  # 显示错误消息
 
     def create_two(self):
         # 创建 QFrame 并设置样式
@@ -251,21 +270,29 @@ class MyApp(QWidget):
 
         # 创建按钮布局并添加按钮
         child_layout1 = QHBoxLayout(two)
+        child_layout2 = QHBoxLayout(two)
         buttons = [
             ('加[]', self.btn1_method),
             ('加()', self.btn2_method),
             ('去[]', self.btn3_method),
             ('去()', self.btn4_method),
-            ('加\\text{}', self.btn5_method)
+            ('加\\text{}', self.btn5_method),
+            ('加$', self.btn6_method),
+            ('去$', self.btn7_method),
         ]
         
-        for btn_text, method in buttons:
+        for btn_text, method in buttons[:4]:
             button = QPushButton(btn_text)
             button.clicked.connect(method)
             child_layout1.addWidget(button)
+        for btn_text, method in buttons[4:]:
+            button = QPushButton(btn_text)
+            button.clicked.connect(method)
+            child_layout2.addWidget(button)
 
         # 将按钮布局添加到主布局
         layout.addLayout(child_layout1)
+        layout.addLayout(child_layout2)
 
         # 设置布局到 QFrame
         two.setLayout(layout)
@@ -309,6 +336,18 @@ class MyApp(QWidget):
                 final_text
             )
             
+            self.text_box.setPlainText(final_text)
+    
+    def btn6_method(self):
+        '''用$符号包裹公式'''
+        if self.output_result:
+            final_text = '$' + self.output_result + '$'
+            self.text_box.setPlainText(final_text)
+    
+    def btn7_method(self):
+        '''去$符号的实现'''
+        if self.output_result:
+            final_text = self.output_result.replace('$', '').replace('$', '').replace("\n", "", 1).rstrip("\n")
             self.text_box.setPlainText(final_text)
 
     def set_output(self, model_output):

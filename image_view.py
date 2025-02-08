@@ -1,4 +1,3 @@
-import sys
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 from PyQt5.QtGui import QPixmap, QPainter
 from PyQt5.QtCore import Qt
@@ -59,10 +58,12 @@ class ImageViewer(QGraphicsView):
         new_scale_factor = self.scale_factor * scale_factor
         if self.min_scale <= new_scale_factor <= self.max_scale:
             self.scale_factor = new_scale_factor
-            self.scale(scale_factor, scale_factor)
+            self.resetTransform()  # 重置变换
+            self.scale(self.scale_factor, self.scale_factor)  # 应用新的缩放因子
 
         # 手动更新视图
         self.viewport().update()
+
 
     def resizeEvent(self, event):
         """ 调整图像以适应窗口大小 """
@@ -74,14 +75,15 @@ class ImageViewer(QGraphicsView):
 
     def adjust_image_to_view(self):
         """ 调整图像大小以适应视图的大小 """
-        if self.pixmap_item.pixmap().isNull():
-            return
+        pixmap = self.pixmap_item.pixmap()
+        if pixmap.isNull() or pixmap.width() == 0 or pixmap.height() == 0:
+            return  # 如果图像无效，则不进行缩放操作
         
         # 获取视图和图片的尺寸
         view_width = self.viewport().width()
         view_height = self.viewport().height()
-        pixmap_width = self.pixmap_item.pixmap().width()
-        pixmap_height = self.pixmap_item.pixmap().height()
+        pixmap_width = pixmap.width()
+        pixmap_height = pixmap.height()
 
         # 计算缩放比例，保持图片宽高比
         scale_x = view_width / pixmap_width
